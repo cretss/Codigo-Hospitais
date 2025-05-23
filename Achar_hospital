@@ -1,0 +1,44 @@
+import osmnx as ox
+import pandas as pd
+import geopandas as gpd
+import geobr
+from geobr import read_state
+from geobr import read_municipality
+
+
+# 1. Obter o polígono do estado de São Paulo
+estado_sp = read_state(code_state="SP", year=2020)  
+
+# 2. Buscar hospitais no estado de São Paulo
+municipios_sp = read_municipality(code_muni="SP", year=2020)  
+
+# Lista para armazenar todos os hospitais
+todos_hospitais = []
+
+# Tag para buscar hospitais
+tags = {"amenity": "hospital"}
+
+# Iterar sobre os municípios e buscar hospitais
+for idx, municipio in municipios_sp.iterrows():
+    try:
+        print(f"Buscando hospitais em {municipio['name_muni']}...")
+        hospitais = ox.features.features_from_polygon(municipio.geometry, tags=tags)
+        todos_hospitais.append(hospitais)
+    except Exception as e:
+        print(f"Erro ao buscar hospitais em {municipio['name_muni']}: {e}")
+
+# Combinar todos os resultados em um único GeoDataFrame
+hospitais_total = gpd.GeoDataFrame(pd.concat(todos_hospitais, ignore_index=True))
+
+# 4. Extrair coordenadas dos hospitais
+hospitais_total = hospitais_total.dropna(subset="name")
+hospitais_total_df = pd.DataFrame({
+    "Nome": hospitais_total["name"],
+    "latitude": hospitais_total.geometry.centroid.y,
+    "longitude": hospitais_total.geometry.centroid.x
+})
+
+# 5. Salvar os dados em um arquivo Excel
+hospitais_total_df.to_excel("Hospitais.xlsx", index=False)
+
+print("Dados dos hospitais salvos com sucesso!")
