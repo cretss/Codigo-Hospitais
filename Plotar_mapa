@@ -1,4 +1,10 @@
 #é necessário transformar o xlsx feito em csv para realizar o heatmap
+
+#Aquisição de dados
+
+dados_1 = pd.read_excel("geocodigos.xlsx") #isso aqui se obtém pelo site do IBGE, com os geocodigos de cada área de são paulo registrado no arquivo JSON que usaremos
+dados_1
+
 dados_hosp_estaduais = np.genfromtxt("empreiteiras_totais_do_estado.csv",delimiter=";")
 dados_hosp_estaduais[np.isnan(dados_hosp_estaduais)] = -21.69298908
 dados_hosp_estaduais
