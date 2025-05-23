@@ -1,0 +1,60 @@
+#é necessário transformar o xlsx feito em csv para realizar o heatmap
+dados_hosp_estaduais = np.genfromtxt("empreiteiras_totais_do_estado.csv",delimiter=";")
+dados_hosp_estaduais[np.isnan(dados_hosp_estaduais)] = -21.69298908
+dados_hosp_estaduais
+
+import folium
+import folium.features
+from folium.plugins import MousePosition
+import pandas as pd
+
+# Cria o mapa
+mapa_estado_sp = folium.Map(location=[-22.90, -47.06], zoom_start=6,tiles=None)
+
+folium.TileLayer(tiles=branca.utilities.image_to_url([[1,1],[1,1]]),attr="EESC Finance",name="Imagem Fundo").add_to(mapa_estado_sp)
+
+# Adiciona a posição do mouse/bom para saber localizacoes
+MousePosition().add_to(mapa_estado_sp)
+
+# Define o estilo do GeoJSON
+style = lambda x: {"color": "Black", "fillOpacity": 0, "weight": 1}
+
+#Ler o arquivo como raw string e com codificação diferente (UTF-8)
+try:
+    arquivo_geojson = "SP.min.json"    #Arquivo json obtido do GITHUB https://github.com/luizpedone/municipal-brazilian-geodata/tree/master/data
+    with open(arquivo_geojson, "r", encoding="utf-8") as f:
+        geojson_data = f.read()
+    
+    # Adiciona o GeoJSON ao mapa
+    folium.GeoJson(geojson_data, style_function=style, name="distritos").add_to(mapa_estado_sp)
+    print("GeoJSON carregado com sucesso!")
+except FileNotFoundError:
+    print(f"Erro: Arquivo '{arquivo_geojson}' não encontrado.")
+except Exception as e:
+    print(f"Erro ao carregar o GeoJSON: {e}")
+
+# Adiciona o Choropleth ao mapa (Opcional: No caso adicionei isso para verificar se onde há + Hospitais há um IDH maior)
+
+choropleth_layer = folium.FeatureGroup(name='IDHM Choropleth')
+
+folium.Choropleth(
+    geo_data=geojson_data,  
+    data=dados_1,
+    columns=["Codigo", "IDHM"],
+    key_on="feature.properties.GEOCODIGO",  
+    fill_color="Blues",
+    fill_opacity=0.55,  
+    legend_name="IDHM"
+).add_to(mapa_estado_sp)
+
+# Adicionando o HeatMap
+heatmap_layer = folium.FeatureGroup(name='HeatMap')  
+folium.plugins.HeatMap(data=dados_hosp_estaduais).add_to(heatmap_layer)  
+heatmap_layer.add_to(mapa_estado_sp)  
+
+# Controle de camadas
+folium.LayerControl(position="topright").add_to(mapa_estado_sp)
+
+# Exibindo o mapa
+
+mapa_estado_sp
