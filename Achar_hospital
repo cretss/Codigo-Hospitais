@@ -16,7 +16,7 @@ municipios_sp = read_municipality(code_muni="SP", year=2020)
 todos_hospitais = []
 
 # Tag para buscar hospitais
-tags = {"amenity": "hospital"}
+tags = {"amenity": ["hospital","clinic"]}
 
 # Iterar sobre os municípios e buscar hospitais
 for idx, municipio in municipios_sp.iterrows():
