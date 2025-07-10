@@ -5,8 +5,8 @@
 dados_1 = pd.read_excel("geocodigos.xlsx") #isso aqui se obtém pelo site do IBGE, com os geocodigos de cada área de são paulo registrado no arquivo JSON que usaremos
 dados_1
 
-dados_hosp_estaduais = np.genfromtxt("empreiteiras_totais_do_estado.csv",delimiter=";")
-dados_hosp_estaduais[np.isnan(dados_hosp_estaduais)] = -21.69298908
+dados_hosp_estaduais = np.genfromtxt("hospitais_totais_do_estado.csv",delimiter=";") #lembre-se de colocar isso em arquivo CSV
+dados_hosp_estaduais[np.isnan(dados_hosp_estaduais)] = -21.69298908 #Devido a alguns problemas na mudança do XLSX para CSV
 dados_hosp_estaduais
 
 import folium
@@ -64,3 +64,5 @@ folium.LayerControl(position="topright").add_to(mapa_estado_sp)
 # Exibindo o mapa
 
 mapa_estado_sp
+
+#para os outros lugares é só repetir o processo
