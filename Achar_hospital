@@ -5,6 +5,7 @@ import geobr
 from geobr import read_state
 from geobr import read_municipality
 
+#No caso está feito os hospitais de São Paulo ao mudar o Code State para BA (TANTO 1 QUANTO O 2, será feito na Bahia) e de preferencia mudar o nome do excel para não sobrescrever o mesmo arquivo
 
 # 1. Obter o polígono do estado de São Paulo
 estado_sp = read_state(code_state="SP", year=2020)  
